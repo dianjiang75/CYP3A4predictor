@@ -8,7 +8,7 @@ This project uses machine learning to predict whether a chemical compound is a s
 
 The model is deployed and ready to use as an interactive screening tool on Hugging Face Spaces.
 
-[Try the CYP3A4 Predictor here](https://huggingface.co/spaces/<your-username>/<your-space>)
+[Try the CYP3A4 Predictor here](https://huggingface.co/spaces/dianjiang/cyp3a4-predictor)
 
 ---
 
@@ -78,7 +78,7 @@ This project successfully developed a machine learning model to predict CYP3A4 s
 
 ## Path Forward
 
-- **Interactive Screening Tool:** The model has been deployed as a user-friendly web application on Hugging Face Spaces. It supports batch processing and allows users to set custom decision thresholds. You can access it here: [CYP3A4 Predictor](https://huggingface.co/spaces/<your-username>/<your-space>).
+- **Interactive Screening Tool:** The model has been deployed as a user-friendly web application on Hugging Face Spaces. It supports batch processing and allows users to set custom decision thresholds. You can access it here: [CYP3A4 Predictor](https://huggingface.co/spaces/dianjiang/cyp3a4-predictor).
 - **Expansion to Other CYP Enzymes:** The methodology can be extended to the other five CYP enzymes in the dataset (CYP1A2, 2C9, 2C19, 2D6, 2E1) to create a comprehensive DDI prediction suite.
 - **Exploration of Advanced Features:** Future versions could incorporate additional molecular descriptors (e.g., LogP, molecular weight) to potentially enhance predictive accuracy.
 
