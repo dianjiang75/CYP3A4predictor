@@ -17,7 +17,6 @@ The model is deployed and ready to use as an interactive screening tool on Huggi
 In drug discovery, understanding how the human body metabolizes a new medicine is crucial. A major player in this process is a family of liver enzymes called cytochrome P450s (CYPs), with CYP3A4 being responsible for breaking down approximately 30–50% of all drugs.
 
 If a drug is a CYP3A4 substrate, it can lead to significant Drug-Drug Interactions (DDI):
-
 - **Inhibition:** If another drug inhibits CYP3A4, the primary drug can accumulate in the body, leading to toxicity.
 - **Induction:** If another drug boosts CYP3A4 production, the primary drug may be cleared too quickly, reducing its effectiveness.
 
@@ -39,7 +38,7 @@ This tool provides a straightforward way to screen molecules:
 2. **Featurization:** The SMILES string is converted into a numerical Morgan fingerprint.
 3. **Prediction:** A machine learning model estimates the probability of the molecule being a CYP3A4 substrate.
 4. **Classification:** A recall-first threshold of 0.25 is applied to assign a label:
-   - **Substrate (1):** Probability ≥ 0.25  
+   - **Substrate (1):** Probability ≥ 0.25
    - **Not a Substrate (0):** Probability < 0.25
 
 ---
@@ -54,10 +53,49 @@ To mitigate this risk, the model is optimized for high recall, ensuring it corre
 
 ## About the Data
 
-The model was trained on a peer-reviewed dataset of ~2,000 compounds from Nature’s Scientific Data [1]. This dataset, sourced from Figshare [2], specifies whether a small molecule is metabolized by one of six key liver enzymes. For this project, only the CYP3A4 data was used.
+The model was trained on a peer-reviewed dataset of ~2,000 compounds from Nature's Scientific Data [1]. This dataset, sourced from Figshare [2], specifies whether a small molecule is metabolized by one of six key liver enzymes. For this project, only the CYP3A4 data was used.
 
 - **Data Curation:** Each compound's classification was cross-verified with at least two independent, reliable sources (e.g., DrugBank, FDA lists). Compounds with conflicting references were excluded.
 - **SMILES Strings:** All molecular structures were represented as canonicalized SMILES strings using RDKit to ensure consistency.
+
+---
+
+## Model Evaluation
+
+We evaluated several machine learning algorithms to find the best-performing model for this task. The evaluation focused on two key metrics: ROC AUC (overall discriminative ability) and recall on the substrate class (to minimize false negatives).
+
+### Models Compared
+
+| Model | ROC AUC | Recall (Substrate) | Precision (Substrate) |
+|-------|---------|-------------------|----------------------|
+| Logistic Regression | 0.87 | 0.77 | 0.74 |
+| Random Forest (Tuned) | 0.89 | 0.82 | 0.79 |
+| Gradient Boosting | 0.88 | 0.78 | 0.77 |
+| LightGBM | 0.89 | 0.80 | 0.76 |
+| **LightGBM (Tuned)** | **0.90** | **0.92*** | **0.70*** |
+
+*At decision threshold = 0.2 to prioritize recall
+
+### ROC Curve Comparison
+
+The ROC curve shows each model's ability to distinguish between substrates and non-substrates across all possible thresholds. The tuned LightGBM model achieves the highest AUC of 0.90, indicating superior overall discriminative performance.
+
+![ROC Curve Comparison](roc_curve_comparison.png)
+
+### Precision-Recall Curve
+
+The precision-recall curve is particularly important for imbalanced classification tasks. Our tuned LightGBM model maintains the best balance, with an average precision (AP) of 0.88. Notably, in the high-recall region (>0.9), the tuned model retains higher precision than alternatives.
+
+![Precision-Recall Curve](precision_recall_curve.png)
+
+### Why We Chose LightGBM (Tuned)
+
+The tuned LightGBM model was selected for deployment because it achieves:
+- **Highest recall (0.92):** Minimizes the most critical error—missing true substrates
+- **Best ROC AUC (0.90):** Strong overall model ranking ability
+- **Competitive precision (0.70):** Reduces unnecessary confirmatory testing
+
+At a decision threshold of 0.2, this model correctly identifies 92% of all true substrates while maintaining usable precision, directly aligning with the project's safety-first objective.
 
 ---
 
@@ -87,5 +125,4 @@ This project successfully developed a machine learning model to predict CYP3A4 s
 ## Citations
 
 1. Ni, Y.-H., Su, Y.-W., Yang, S.-C., et al. Curated CYP450 Interaction Dataset: Covering the Majority of Phase I Drug Metabolism. Scientific Data 2025, 12, 1427.
-
 2. Dataset (Figshare): Comprehensively-Curated Dataset of CYP4C50 Interactions: Enhancing Predictive Models for Drug Metabolism. https://doi.org/10.6084/m9.figshare.26630515
